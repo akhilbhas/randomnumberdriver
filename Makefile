@@ -18,7 +18,6 @@ driver:
 	@mkdir -p $(BIN_DIR)
 	$(MAKE) -C $(KDIR) M=$(PWD) modules
 	@mv -f *.ko *.o *.mod *.mod.c *.order *.symvers $(BIN_DIR) 2>/dev/null || true
-	@mv -f .* $(BIN_DIR) 2> /dev/null || true
 
 test:
 	$(MAKE) -C test BIN_DIR=$(BIN_DIR) INC_DIR=$(PWD)/inc
