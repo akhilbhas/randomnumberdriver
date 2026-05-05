@@ -120,7 +120,7 @@ static struct file_operations fops = {
 static int __init rng_init(void){
 	major = register_chrdev(0,DEVICE_NAME,&fops);
 
-	rng_class = class_create(CLASS_NAME);
+	rng_class = class_create(THIS_MODULE,CLASS_NAME);
 	rng_device = device_create(rng_class, NULL, MKDEV(major,0),NULL, DEVICE_NAME);
 
 	printk(KERN_INFO "RNG Char device loaded\n");
