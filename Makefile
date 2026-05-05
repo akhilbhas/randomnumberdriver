@@ -1,4 +1,4 @@
-obj-m +=rng_custom.o
+obj-m += rng_custom.o
 
 ccflags-y += -I$(PWD)/inc
 
