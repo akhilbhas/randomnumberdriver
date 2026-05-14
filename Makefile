@@ -1,6 +1,18 @@
-obj-m +=rng_custom.o
+all:
+	$(MAKE) -C src
+	$(MAKE) -C test
 
-ccflags-y += -I$(PWD)/inc
+clean: 
+	@echo "Use component-specific clean targets"
+driver_clean:
+	$(MAKE) -C src clean
+test_clean:
+	$(MAKE) -C test clean
 
-rng_custom-y := src/rng_custom.o
+driver:
+	$(MAKE) -C src
 
+test:
+	$(MAKE) -C test
+
+.PHONY: all clean driver test driver_clean test_clean

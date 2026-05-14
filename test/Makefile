@@ -1,12 +1,19 @@
-CC := gcc
-CFLAGS := -Wall -I$(INC_DIR)
+TARGET := rng_test
+SRC := rng_tester.c
 
-TARGET := test_rng
+PREFIX ?= /usr
+BINDIR ?= $(PREFIX)/bin
 
-SRC:=rng_tester.c
+all: $(TARGET)
 
-all:
-	@mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) $(SRC) -o $(BIN_DIR)/$(TARGET)
+$(TARGET): $(SRC)
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(SRC) -o $(TARGET) $(LDFLAGS)
+
 clean:
-	rm -rf $(BIN_DIR)/$(TARGET)
+	rm -f $(TARGET)
+
+install: $(TARGET)
+	install -d $(DESTDIR)$(BINDIR)
+	install -m 0755 $(TARGET) $(DESTDIR)$(BINDIR)/$(TARGET)
+
+.PHONY: all clean install
