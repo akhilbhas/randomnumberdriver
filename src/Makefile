@@ -10,8 +10,7 @@ else
 
 # ===== External Build Context =====
 
-KDIR ?= /lib/modules/$(shell uname -r)/build
-PWD := $(shell pwd)
+KDIR ?= $(KERNEL_SRC)
 
 all:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules
