@@ -5,10 +5,17 @@
 #include<linux/random.h>
 #include<linux/types.h>
 #include<linux/kernel.h>
+#include <linux/version.h>
 #include "rng_custom.h"
 
 #define DEVICE_NAME "random_char"
 #define CLASS_NAME "rng"
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 4, 0)
+#define RNG_CLASS_CREATE(name) class_create(name)
+#else
+#define RNG_CLASS_CREATE(name) class_create(THIS_MODULE, name)
+#endif
 //char device parameters
 static int major;
 static struct class* rng_class = NULL;
@@ -32,7 +39,7 @@ static u32 rng_calulate_value(u32 min, u32 max){
  */
 static ssize_t rng_read(struct file *file, char __user *buff, size_t len, loff_t *offset)
 {
-	
+
 	u32 random_value;
 	char kbuf[32];
 	int str_len;
@@ -48,7 +55,7 @@ static ssize_t rng_read(struct file *file, char __user *buff, size_t len, loff_t
 
 	if(*offset >=str_len)
 		return 0;
-	
+
 	if (len > str_len - *offset)
 		len = str_len - *offset;
 
@@ -73,7 +80,7 @@ static ssize_t rng_write(struct file *file, const char __user *buf, size_t len, 
 		return -EINVAL;
 	if(copy_from_user(kbuf,buf,len))
 		return -EFAULT;
-	
+
 	kbuf[len] = '\0';
 
 	ret =sscanf(kbuf,"%u %u",&rng_min, &rng_max);
@@ -119,8 +126,7 @@ static struct file_operations fops = {
 
 static int __init rng_init(void){
 	major = register_chrdev(0,DEVICE_NAME,&fops);
-
-	rng_class = class_create(THIS_MODULE,CLASS_NAME);
+	rng_class = RNG_CLASS_CREATE(CLASS_NAME)
 	rng_device = device_create(rng_class, NULL, MKDEV(major,0),NULL, DEVICE_NAME);
 
 	printk(KERN_INFO "RNG Char device loaded\n");
